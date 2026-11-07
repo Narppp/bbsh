@@ -1,0 +1,7 @@
+a.out
+vgcore.*
+obj/
+obj/debug_obj/
+obj/norm_obj/
+normal_build/
+debug_build/
