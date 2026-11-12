@@ -1,5 +1,6 @@
 
 #include <bbsh/shlib.h>
+#include <bbsh/utils.h>
 #include <bbsh/inputs.h>
 
 /* TODO for tokenizer:
@@ -57,7 +58,7 @@ char *parse_quoted_words(const char **input)
         char *token = malloc(input_len + 1);
 
         if (token == NULL) {
-                perror("Quoted Token Allocation");
+                perror("Token Memory Allocation");
                 exit(1);
         }
 
@@ -98,13 +99,14 @@ char **tokenizer(const char *string, uint16_t *token_amount)
 
                 if (*input == '"') {
                         token = parse_quoted_words(&input);
-                } else {
-                        token = parse_normal_words(&input);
 
                         if (token == NULL) {
-                                printf("command didn't end in a quotation mark.\n");
-                                continue;
+                                free_tokens(token_holder, token_count);
+                                return NULL;
                         }
+
+                } else {
+                        token = parse_normal_words(&input);
                 }
 
                 if (token_count == storage_size) {
