@@ -18,7 +18,7 @@ char *parse_normal_words(const char **input)
 
         // check for whitespaces, quotation marks, and null terminators
         while (*end != '\0' && *end != ' ' && *end != '"') {
-                end++;
+                ++end;
         }
 
         /* subtract those two memory addresses to get the length of the string
@@ -50,9 +50,9 @@ char *parse_quoted_words(const char **input)
         const char *end = start;
 
         while (*end != '\0' && *end != *quote) {
-                end++;
-        }
-        
+                ++end;
+        }        
+
         uint16_t input_len = end - start;
         char *token = malloc(input_len + 1);
 
@@ -63,6 +63,11 @@ char *parse_quoted_words(const char **input)
 
         strncpy(token, start, input_len);
         token[input_len] = '\0';
+
+        if (*end != *quote) {
+                free(token);
+                return NULL;
+        }
 
         // point to the last character and advance one character more to skip the last quotation mark
         *input = end + 1;
@@ -95,6 +100,11 @@ char **tokenizer(const char *string, uint16_t *token_amount)
                         token = parse_quoted_words(&input);
                 } else {
                         token = parse_normal_words(&input);
+
+                        if (token == NULL) {
+                                printf("command didn't end in a quotation mark.\n");
+                                continue;
+                        }
                 }
 
                 if (token_count == storage_size) {
@@ -113,6 +123,8 @@ char **tokenizer(const char *string, uint16_t *token_amount)
                 }
                 token_holder[token_count++] = token;
         }
+
+        token_holder[token_count] = NULL;
 
         *token_amount = token_count;
         return token_holder;
