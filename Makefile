@@ -30,7 +30,7 @@ sanitize: $(DEBUG_PROJ_NAME)
 	@./$(DEBUG_PROJ_NAME)
 
 valgrind: $(NORM_PROJ_NAME)
-	@valgrind --leak-check=full --show-leak-kinds=all --track-origins=yes ./$(NORM_PROJ_NAME)
+	@valgrind --leak-check=full --show-leak-kinds=all --track-origins=yes -s ./$(NORM_PROJ_NAME)
 
 $(DEBUG_PROJ_NAME): $(DEBUG_OBJS) | $(DEBUG_DIR)
 	@$(CC) $(CFLAGS) $(DEBUG_OBJS) $(DEBUG_FLAGS) -o $(DEBUG_PROJ_NAME)
