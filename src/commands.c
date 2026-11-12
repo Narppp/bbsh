@@ -4,27 +4,23 @@
 
 void exec_commands(char **tokens)
 {
-	if (tokens == NULL || tokens[0] == NULL) {
-		// if user inputs nothing, go back
-		return;
-	}
+        if (tokens[0] == NULL)
+                return;
 
-	pid_t id = fork();
+        pid_t id = fork();
 
-	if (id < 0) {
-		perror("Fork failed");
-		return;
-	}
+        if (id < 0) {
+                perror("Fork");
+                exit(1);
+        }
 
-	if (id == 0 /* child process */) {
-		if (execvp(tokens[0], tokens) < 0) {
-			perror("bbsh");
-			exit(EXIT_FAILURE);
-		}
-		exit(EXIT_FAILURE);
-	} else {
-		// parent process
-		int32_t id_status = 0;
-		waitpid(id, &id_status, 0);
-	}
+        if (id == 0) {
+                if (execvp(tokens[0], tokens) < 0)
+                        perror("bbsh");
+                exit(1);
+        }
+        else {
+                pid_t status = 0;
+                waitpid(id, &status, 0);
+        }
 }
