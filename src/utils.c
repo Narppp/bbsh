@@ -11,7 +11,15 @@ char *get_dir(char *prompt)
                 perror("bbsh");
         }
 
-        snprintf(prompt, PROMPT_SIZE, "<nerpsh \033[0;32m[%s]\033[0m> ", buffer);
+        char *shortened_dir = strrchr(buffer, '/');
+        
+        if (shortened_dir == NULL) {
+                perror("what?");
+        }
+
+        shortened_dir++;
+
+        snprintf(prompt, PROMPT_SIZE, "<nerpsh \033[0;32m[%s]\033[0m> ", shortened_dir);
         return prompt;
 }
 
