@@ -2,6 +2,7 @@
 #include <bbsh/shlib.h>
 #include <bbsh/utils.h>
 #include <bbsh/inputs.h>
+#include <bbsh/commands.h>
 
 int main(void)
 {
@@ -14,11 +15,7 @@ int main(void)
                 buffer = sh_prompt(prompt);
                 tokens = tokenizer(buffer, &token_amount);
 
-                if (tokens == NULL || tokens[0] == NULL) {
-                        free(buffer);
-                        free_tokens(tokens, token_amount);
-                        continue;
-                }
+                exec_commands(tokens);
 
                 free(buffer);
                 free_tokens(tokens, token_amount);
