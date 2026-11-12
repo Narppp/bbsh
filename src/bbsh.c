@@ -15,6 +15,13 @@ int main(void)
                 buffer = sh_prompt(prompt);
                 tokens = tokenizer(buffer, &token_amount);
 
+                if (tokens == NULL) {
+                        printf("command didn't end properly.\n");
+                        free(buffer);
+                        free_tokens(tokens, token_amount);
+                        continue;
+                }
+
                 exec_commands(tokens);
 
                 free(buffer);
