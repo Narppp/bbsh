@@ -7,12 +7,13 @@
 int main(void)
 {
         uint16_t token_amount = 0;
+        char directory[CURR_DIR] = {0};
         char prompt[PROMPT_SIZE] = {0};
         char *buffer = NULL;
         char **tokens = NULL;
 
         while (1) {
-                buffer = sh_prompt(prompt);
+                buffer = sh_prompt(prompt, directory);
                 tokens = tokenizer(buffer, &token_amount);
 
                 if (tokens == NULL) {
@@ -20,6 +21,15 @@ int main(void)
                         goto clean_all;
                         continue;
                 }
+
+                int16_t is_custom_command = custom_commands(tokens, directory);
+
+                // exit command
+                if (is_custom_command == -1)
+                        goto clean_all;
+                // working command
+                if (is_custom_command == 1)
+                        goto clean_all;
 
                 exec_commands(tokens);
 
@@ -30,6 +40,9 @@ int main(void)
                         free_tokens(tokens, token_amount);
                         buffer = NULL;
                         token_amount = 0;
+                        
+                        if (is_custom_command == -1)
+                                exit(0);
         }
         return 0;
 }
