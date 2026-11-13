@@ -3,15 +3,13 @@
 #include <bbsh/utils.h>
 #include <bbsh/inputs.h>
 
-char *get_dir(char *prompt)
+char *get_dir(char *prompt, char *curr_dir)
 {
-        char buffer[CURR_DIR] = {0};
-
-        if (getcwd(buffer, CURR_DIR) == NULL) {
+        if (getcwd(curr_dir, CURR_DIR) == NULL) {
                 perror("bbsh");
         }
 
-        char *shortened_dir = strrchr(buffer, '/');
+        char *shortened_dir = strrchr(curr_dir, '/');
         
         if (shortened_dir == NULL) {
                 perror("what?");
@@ -23,9 +21,9 @@ char *get_dir(char *prompt)
         return prompt;
 }
 
-char *sh_prompt(char *prompt)
+char *sh_prompt(char *prompt, char *curr_dir)
 {
-        get_dir(prompt);
+        get_dir(prompt, curr_dir);
         printf("%s", prompt);
         fflush(stdout);
         char *temp_buf = malloc(MAX_BUF * sizeof(char));
