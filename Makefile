@@ -1,5 +1,5 @@
 CC = gcc
-CFLAGS = -Wall -Wextra -Werror -Wpedantic -Iinclude -O2
+CFLAGS = -Wall -Wextra -Werror -Wpedantic -Iinclude -O2 -g3
 SRC_DIR = src
 OBJ_DIR = obj
 BUILD_DIR = normal_build
