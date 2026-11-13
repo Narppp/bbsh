@@ -110,10 +110,7 @@ char **tokenizer(const char *string, uint16_t *token_amount)
                 }
 
                 if (token_count == storage_size) {
-                        printf("Reallocating token array, current prompt is too big...\n");
                         storage_size *= 2;
-
-                        printf("Storage size: %u\n", storage_size);
                         char **temp_token_holder = realloc(token_holder, storage_size * sizeof(char *));
 
                         if (temp_token_holder == NULL) {
@@ -164,6 +161,7 @@ char *d_input(char *buffer)
         if (character == -1) {
                 printf("Exited shell successfully.\n");
                 free(buffer);
+                buffer = NULL;
                 exit(0);
         }
 
