@@ -17,16 +17,19 @@ int main(void)
 
                 if (tokens == NULL) {
                         printf("command didn't end properly.\n");
-                        free(buffer);
-                        free_tokens(tokens, token_amount);
+                        goto clean_all;
                         continue;
                 }
 
                 exec_commands(tokens);
 
-                free(buffer);
-                free_tokens(tokens, token_amount);
-        }
+                goto clean_all;
 
+                clean_all:
+                        free(buffer);
+                        free_tokens(tokens, token_amount);
+                        buffer = NULL;
+                        token_amount = 0;
+        }
         return 0;
 }
