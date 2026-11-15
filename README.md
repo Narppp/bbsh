@@ -1,6 +1,6 @@
 # bbsh
 
-**Current Version: v0.03**
+## Current Version: v0.02
 What I have added so far:
 - Dynamic input from scratch
 - String parsers and Tokenizers from scratch
