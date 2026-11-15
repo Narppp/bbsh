@@ -5,7 +5,7 @@
 
 char *get_dir(char *prompt, char *curr_dir)
 {
-        if (getcwd(curr_dir, CURR_DIR) == NULL) {
+        if (getcwd(curr_dir, PATH_MAX) == NULL) {
                 perror("bbsh");
         }
 
@@ -17,7 +17,7 @@ char *get_dir(char *prompt, char *curr_dir)
 
         shortened_dir++;
 
-        snprintf(prompt, PROMPT_SIZE, "<nerpsh \033[0;32m[%s]\033[0m> ", shortened_dir);
+        snprintf(prompt, MAX_INPUT, "<nerpsh \033[0;32m[%s]\033[0m> ", shortened_dir);
         return prompt;
 }
 
@@ -26,7 +26,7 @@ char *sh_prompt(char *prompt, char *curr_dir)
         get_dir(prompt, curr_dir);
         printf("%s", prompt);
         fflush(stdout);
-        char *temp_buf = malloc(MAX_BUF * sizeof(char));
+        char *temp_buf = malloc(MAX_INPUT * sizeof(char));
 
         if (temp_buf == NULL) {
                 perror("Temporary Buffer");

@@ -2,6 +2,7 @@
 #include <bbsh/shlib.h>
 #include <bbsh/utils.h>
 #include <bbsh/inputs.h>
+#include <limits.h>
 
 /* TODO for tokenizer:
  * - parse_normal_words should only take account normal unquoted words
@@ -77,7 +78,7 @@ char *parse_quoted_words(const char **input)
 
 char **tokenizer(const char *string, uint16_t *token_amount)
 {
-        uint16_t storage_size = MAX_BUF;
+        uint16_t storage_size = MAX_INPUT;
         uint16_t token_count = 0;
         const char *input = string;
         char **token_holder = malloc(storage_size * sizeof(char *));
@@ -134,7 +135,7 @@ char *d_input(char *buffer)
 {
         int16_t character = 0;
         uint16_t buffer_idx = 0;
-        uint16_t buffer_size = MAX_BUF;
+        uint16_t buffer_size = MAX_INPUT;
 
         while ((character = fgetc(stdin)) != EOF) {
 

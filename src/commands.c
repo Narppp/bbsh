@@ -71,7 +71,7 @@ int16_t custom_commands(char **tokens, char *curr_dir)
                                 return -2;
                         }
 
-                        snprintf(curr_dir, CURR_DIR, "%s", target_dir);
+                        snprintf(curr_dir, PATH_MAX, "%s", target_dir);
 
                         if (chdir(curr_dir) < 0)
                                 return -2;

@@ -7,8 +7,8 @@
 int main(void)
 {
         uint16_t token_amount = 0;
-        char directory[CURR_DIR] = {0};
-        char prompt[PROMPT_SIZE] = {0};
+        char directory[PATH_MAX] = {0};
+        char prompt[MAX_INPUT] = {0};
         char *buffer = NULL;
         char **tokens = NULL;
 

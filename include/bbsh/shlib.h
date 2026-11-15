@@ -7,6 +7,7 @@
 */
 #include <errno.h>
 #include <stdio.h>
+#include <limits.h>
 #include <stdint.h>
 #include <stdlib.h>
 #include <string.h>
@@ -14,8 +15,5 @@
 
 #include <sys/types.h>
 #include <sys/wait.h>
-
-#define CURR_DIR 1024
-#define PROMPT_SIZE 128
 
 #endif
