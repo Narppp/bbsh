@@ -6,23 +6,20 @@
 
 int main(void)
 {
-        uint16_t token_amount = 0;
-        char directory[PATH_MAX] = {0};
-        char prompt[MAX_INPUT] = {0};
-        char *buffer = NULL;
-        char **tokens = NULL;
+        struct Shell bbsh = {0};
 
         while (1) {
-                buffer = sh_prompt(prompt, directory);
-                tokens = tokenizer(buffer, &token_amount);
+                char *shortened_dir = get_dir(bbsh.directory);
+                bbsh.buffer = sh_prompt(bbsh.buffer, shortened_dir);
+                bbsh.tokens = tokenizer(bbsh.buffer, &bbsh.token_amount);
 
-                if (tokens == NULL) {
+                if (bbsh.tokens == NULL) {
                         printf("command didn't end properly.\n");
                         goto clean_all;
                         continue;
                 }
 
-                int16_t is_custom_command = custom_commands(tokens, directory);
+                int16_t is_custom_command = custom_commands(bbsh.tokens, bbsh.directory);
 
                 // exit command
                 if (is_custom_command == -1)
@@ -31,18 +28,19 @@ int main(void)
                 if (is_custom_command == 1)
                         goto clean_all;
 
-                exec_commands(tokens);
+                exec_commands(bbsh.tokens);
 
                 goto clean_all;
 
                 clean_all:
-                        free(buffer);
-                        free_tokens(tokens, token_amount);
-                        buffer = NULL;
-                        token_amount = 0;
+                        free(bbsh.buffer);
+                        free_tokens(bbsh.tokens, bbsh.token_amount);
+                        bbsh.buffer = NULL;
+                        bbsh.token_amount = 0;
                         
                         if (is_custom_command == -1)
                                 exit(0);
+
         }
         return 0;
 }
