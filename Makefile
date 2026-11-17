@@ -1,54 +1,45 @@
 CC = gcc
 CFLAGS = -Wall -Wextra -Werror -Wpedantic -Iinclude -O2 -g3
 SRC_DIR = src
-OBJ_DIR = obj
 BUILD_DIR = normal_build
-DEBUG_DIR = debug_build
-DEBUG_FLAGS = -fsanitize=address -g3
+DEBUG_FLAGS = -fsanitize=address,undefined
 
 SRCS = $(wildcard src/*.c)
 
 NORM_OBJ_DIR = obj/norm_obj
-DEBUG_OBJ_DIR = obj/debug_obj
-
 NORM_OBJS = $(SRCS:$(SRC_DIR)/%.c=$(NORM_OBJ_DIR)/%.o)
-DEBUG_OBJS = $(SRCS:$(SRC_DIR)/%.c=$(DEBUG_OBJ_DIR)/%.o)
 
-NORM_PROJ_NAME = $(BUILD_DIR)/norm_bbsh
-DEBUG_PROJ_NAME = $(DEBUG_DIR)/debug_bbsh
+NORM_BIN = $(BUILD_DIR)/norm_bbsh
 
-all: $(NORM_PROJ_NAME)
+all: $(NORM_BIN)
 
-run: $(NORM_PROJ_NAME)
+run: $(NORM_BIN)
 	@clear
-	@./$(NORM_PROJ_NAME)
+	@./$(NORM_BIN)
 
-debug: $(DEBUG_PROJ_NAME)
-	@gdb ./$(DEBUG_PROJ_NAME)
+gdb: $(NORM_BIN)
+	@clear
+	@gdb ./$(NORM_BIN)
 
-sanitize: $(DEBUG_PROJ_NAME)
-	@./$(DEBUG_PROJ_NAME)
+sanitize: $(NORM_BIN)
+	@clear
+	@$(DEBUG_FLAGS) ./$(NORM_BIN)
 
-valgrind: $(NORM_PROJ_NAME)
-	@valgrind --leak-check=full --show-leak-kinds=all --track-origins=yes -s ./$(NORM_PROJ_NAME)
+valgrind: $(NORM_BIN)
+	@clear
+	@valgrind --leak-check=full --show-leak-kinds=all --track-origins=yes -s ./$(NORM_BIN)
 
-$(DEBUG_PROJ_NAME): $(DEBUG_OBJS) | $(DEBUG_DIR)
-	@$(CC) $(CFLAGS) $(DEBUG_OBJS) $(DEBUG_FLAGS) -o $(DEBUG_PROJ_NAME)
-
-$(NORM_PROJ_NAME): $(NORM_OBJS) | $(BUILD_DIR)
-	@$(CC) $(CFLAGS) $(NORM_OBJS) -o $(NORM_PROJ_NAME)
+$(NORM_BIN): $(NORM_OBJS) | $(BUILD_DIR)
+	@$(CC) $(CFLAGS) $(NORM_OBJS) -o $(NORM_BIN)
 
 $(NORM_OBJ_DIR)/%.o: $(SRC_DIR)/%.c | $(NORM_OBJ_DIR)
 	@$(CC) $(CFLAGS) -c $< -o $@
 
-$(DEBUG_OBJ_DIR)/%.o: $(SRC_DIR)/%.c | $(DEBUG_OBJ_DIR)
-	@$(CC) $(CFLAGS) $(DEBUG_FLAGS) -c $< -o $@
-
-$(OBJ_DIR) $(BUILD_DIR) $(DEBUG_DIR) $(NORM_OBJ_DIR) $(DEBUG_OBJ_DIR):
+$(BUILD_DIR) $(NORM_OBJ_DIR):
 	@mkdir -p $@
 
 clean:
-	@rm -rf $(OBJ_DIR) $(BUILD_DIR) $(DEBUG_DIR)
+	@rm -rf $(NORM_OBJ_DIR) $(BUILD_DIR)
 
 help:
 	@echo "Available commands:"
@@ -56,7 +47,7 @@ help:
 	@echo "make run - Build AND Run the shell"
 	@echo "make clean - Deletes all files for proper restart"
 	@echo "make sanitize - Checks ASan for mem leak"
-	@echo "make debug - Runs gdb for debugging"
+	@echo "make gdb - Runs gdb for debugging"
 	@echo "make valgrind - Runs valgrind for easier bug traces"
 
-.PHONY: all clean run help sanitize debug valgrind
+.PHONY: all clean run help sanitize gdb valgrind
