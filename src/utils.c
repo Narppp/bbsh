@@ -3,13 +3,13 @@
 #include <bbsh/utils.h>
 #include <bbsh/inputs.h>
 
-char *get_dir(char *prompt, char *curr_dir)
+char *get_dir(char *directory)
 {
-        if (getcwd(curr_dir, PATH_MAX) == NULL) {
+        if (getcwd(directory, PATH_MAX) == NULL) {
                 perror("bbsh");
         }
 
-        char *shortened_dir = strrchr(curr_dir, '/');
+        char *shortened_dir = strrchr(directory, '/');
         
         if (shortened_dir == NULL) {
                 perror("what?");
@@ -17,29 +17,25 @@ char *get_dir(char *prompt, char *curr_dir)
 
         shortened_dir++;
 
-        snprintf(prompt, MAX_INPUT, "<nerpsh \033[0;32m[%s]\033[0m> ", shortened_dir);
-        return prompt;
+        return shortened_dir;
 }
 
-char *sh_prompt(char *prompt, char *curr_dir)
+char *sh_prompt(char *buffer, char *curr_dir)
 {
-        get_dir(prompt, curr_dir);
+        char prompt[MAX_INPUT] = {0};
+
+        snprintf(prompt, MAX_INPUT, "<nerpsh \033[0;32m[%s]\033[0m> ", curr_dir);
         printf("%s", prompt);
         fflush(stdout);
-        char *temp_buf = malloc(MAX_INPUT * sizeof(char));
-
-        if (temp_buf == NULL) {
-                perror("Temporary Buffer");
-                exit(1);
-        }
         
-        temp_buf = d_input(temp_buf);
-
-        return temp_buf;
+        return d_input(buffer);
 }
 
 void free_tokens(char **tokens, uint16_t token_count)
 {
+        if (tokens == NULL)
+                return;
+
         for (uint16_t idx = 0; idx < token_count; idx++) {
                 free(tokens[idx]);
         }
