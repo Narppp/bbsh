@@ -137,6 +137,13 @@ char *d_input(char *buffer)
         uint16_t buffer_idx = 0;
         uint16_t buffer_size = MAX_INPUT;
 
+        buffer = malloc(MAX_INPUT * sizeof(char));
+
+        if (buffer == NULL) {
+                perror("Buffer");
+                exit(1);
+        }
+
         while ((character = fgetc(stdin)) != EOF) {
 
                 if (character == '\n') {
