@@ -16,4 +16,11 @@
 #include <sys/types.h>
 #include <sys/wait.h>
 
+struct Shell {
+        char directory[PATH_MAX];
+        char *buffer;
+        char **tokens;
+        uint16_t token_amount;
+};
+
 #endif
