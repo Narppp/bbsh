@@ -26,6 +26,77 @@ void exec_commands(char **tokens)
         }
 }
 
+int16_t bbsh_help(char **tokens)
+{
+         /* return values:
+          * no error = 0 | exit code = -1 | valid command = 1 | error and invalid = -2
+          */
+
+        if (tokens[1] == NULL) {
+                printf("Help Command:\n");
+                printf("help: help [command]: used to understand commands\n");
+                printf("jmp: jmp [dir]: change directories (no flags yet)\n");
+                printf("exit: exit: exit the shell program.\n");
+                return 1;
+        } else if (strcmp(tokens[1], "help") == 0) {
+                printf("help: help [command]\n");
+                printf("\tThis displays information about commands.\n");
+                return 1;
+        } else if (strcmp(tokens[1], "jmp") == 0) {
+                printf("jmp: jmp [path]\n");
+                printf("\tJumps to a specific directory/folder. Replacement of cd\n");
+                return 1;
+        } else if (strcmp(tokens[1], "exit") == 0) {
+                printf("exit: exit\n");
+                printf("\tExits the shell.\n");
+                return 1;
+        }
+
+        return 0;
+}
+
+int16_t bbsh_jmp(char **tokens, char *curr_dir)
+{
+         /* return values:
+          * no error = 0 | exit code = -1 | valid command = 1 | error and invalid = -2
+          */
+
+        if (tokens[1] == NULL || strcmp(tokens[1], "~") == 0) {
+                char *target_dir = NULL;
+
+                if ((target_dir = getenv("HOME")) == NULL) {
+                        perror("bbsh: home");
+                        return -2;
+                }
+
+                snprintf(curr_dir, PATH_MAX, "%s", target_dir);
+
+                if (chdir(curr_dir) < 0)
+                        return -2;
+
+                return 1;  
+        } else {
+                if (chdir(tokens[1]) < 0)
+                        return -2;
+
+                return 1;
+        }
+
+        return 0;
+}
+
+int16_t bbsh_exit(char **tokens)
+{
+        /* return values:
+         * no error = 0 | exit code = -1 | valid command = 1 | error and invalid = -2
+         */
+
+        if (tokens[1] == NULL)
+                return -1;
+
+        return 0;
+}
+
 int16_t custom_commands(char **tokens, char *curr_dir)
 {
         /* return values:
@@ -35,55 +106,16 @@ int16_t custom_commands(char **tokens, char *curr_dir)
         if (tokens == NULL || tokens[0] == NULL)
                 return 0;
 
-        if (strcmp(tokens[0], "help") == 0 && tokens[1] == NULL) {
-                printf("Help Command:\n");
-                printf("help: help [command]: used to understand commands\n");
-                printf("jmp: jmp [dir]: change directories (no flags yet)\n");
-                printf("exit: exit: exit the shell program.\n");
-                return 1;
-        } else if (strcmp(tokens[0], "help") == 0 && tokens[1] != NULL) {
-                if (strcmp(tokens[1], "help") == 0) {
-                        printf("help: help [command]\n");
-                        printf("\tThis displays information about commands.\n");
-                        return 1;
-                } else if (strcmp(tokens[1], "jmp") == 0) {
-                        printf("jmp: jmp [path]\n");
-                        printf("\tJumps to a specific directory/folder. Replacement of cd\n");
-                        return 1;
-                } else if (strcmp(tokens[1], "exit") == 0) {
-                        printf("exit: exit\n");
-                        printf("\tExits the shell.\n");
-                        return 1;
-                }
-        } 
+        if (strcmp(tokens[0], "help") == 0)
+                return bbsh_help(tokens);
 
-        if (strcmp(tokens[0], "exit") == 0 && tokens[1] == NULL) {
-                printf("bye bye\n");
-                return -1;
-        } 
+        if (strcmp(tokens[0], "jmp") == 0)
+                return bbsh_jmp(tokens, curr_dir);
 
-        if (strcmp(tokens[0], "jmp") == 0) {
-                if (tokens[1] == NULL || strcmp(tokens[1], "~") == 0) {
-                        char *target_dir = NULL;
-
-                        if ((target_dir = getenv("HOME")) == NULL) {
-                                perror("bbsh: home");
-                                return -2;
-                        }
-
-                        snprintf(curr_dir, PATH_MAX, "%s", target_dir);
-
-                        if (chdir(curr_dir) < 0)
-                                return -2;
-
-                        return 1;  
-                } else {
-                        if (chdir(tokens[1]) < 0)
-                                return -2;
-
-                        return 1;
-                }
-        }
+        if (strcmp(tokens[0], "exit") == 0)
+                return bbsh_exit(tokens);
 
         return 0; 
 }
+
+
