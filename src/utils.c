@@ -42,3 +42,13 @@ void free_tokens(char **tokens, uint16_t token_count)
 
         free(tokens);
 }
+
+void bbsh_greeter(void)
+{
+        printf(" _    _          _    \n"
+               "| |__ | |__  ___ | |__  \n"
+               "| '_ \\| '_ \\/ __|| '_ \\ \n"
+               "| |_) | |_) \\__ \\| | | |\n"
+               "|_.__/|_.__/|___/|_| |_| v0.03\n\n");
+        fflush(stdout);
+}
