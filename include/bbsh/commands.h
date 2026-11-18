@@ -14,5 +14,6 @@ int16_t bbsh_exit(char **tokens);
 
 // command checker if their my own commands
 int16_t custom_commands(char **tokens, char *curr_dir);
+int16_t bbsh_redir(char **tokens);
 
 #endif

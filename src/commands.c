@@ -15,14 +15,17 @@ void exec_commands(char **tokens)
                 exit(1);
         }
 
-        if (id == 0) {
+        if (id == 0) { 
                 if (execvp(tokens[0], tokens) < 0)
                         perror("bbsh");
-                exit(1);
+                _Exit(1);
         }
         else {
                 pid_t status = 0;
                 waitpid(id, &status, 0);
+
+                if (strcmp(tokens[0], "clear") == 0 && tokens[1] == NULL)
+                        bbsh_greeter();
         }
 }
 
@@ -118,4 +121,20 @@ int16_t custom_commands(char **tokens, char *curr_dir)
         return 0; 
 }
 
+char **bbsh_redir(char **tokens, uint16_t token_count)
+{
+        int16_t check_result = check_tokens(tokens);
 
+        switch (check_result) {
+                case -1;
+                        // invalid syntax
+                        printf("Invalid syntax.\n");
+                        return NULL;
+                case 0:
+                        // no symbol found
+                        return tokens;
+                case 1:
+                case 2:
+                case 3:
+        }
+}

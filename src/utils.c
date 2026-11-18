@@ -3,6 +3,29 @@
 #include <bbsh/utils.h>
 #include <bbsh/inputs.h>
 
+void free_tokens(char **tokens, uint16_t token_count)
+{
+        if (tokens == NULL)
+                return;
+
+        for (uint16_t idx = 0; idx < token_count; idx++) {
+                free(tokens[idx]);
+        }
+
+        free(tokens);
+}
+
+void bbsh_greeter(void)
+{
+        printf(" _    _          _    \n"
+               "| |__ | |__  ___ | |__  \n"
+               "| '_ \\| '_ \\/ __|| '_ \\ \n"
+               "| |_) | |_) \\__ \\| | | |\n"
+               "|_.__/|_.__/|___/|_| |_| v0.03\n\n");
+        fflush(stdout);
+}
+
+
 char *get_dir(char *directory)
 {
         if (getcwd(directory, PATH_MAX) == NULL) {
@@ -31,24 +54,31 @@ char *sh_prompt(char *buffer, char *curr_dir)
         return d_input(buffer);
 }
 
-void free_tokens(char **tokens, uint16_t token_count)
+int16_t check_tokens(char **tokens)
 {
-        if (tokens == NULL)
-                return;
+        /* Return Values:
+         * invalid syntax = -1
+         * no redirection symbol = 0
+         * > symbol = 1
+         * < symbol = 2
+         * >> symbol = 3
+         */
 
-        for (uint16_t idx = 0; idx < token_count; idx++) {
-                free(tokens[idx]);
+        for (uint16_t idx = 0; tokens[idx] != NULL; idx++) {
+                if ((strcmp(tokens[idx], ">") == 0 && tokens[idx + 1] == NULL) || 
+                        (strcmp(tokens[idx], "<") == 0 && tokens[idx + 1] == NULL) ||
+                        (strcmp(tokens[idx], ">>") == 0 && tokens[idx + 1] == NULL))
+                        return -1;
+                if (strcmp(tokens[idx], ">") == 0 && tokens[idx + 1] != NULL)
+                        tokens[idx] = NULL;
+                        return 1;
+                if (strcmp(tokens[idx], "<") == 0 && tokens[idx + 1] != NULL)
+                        tokens[idx] = NULL;
+                        return 2;
+                if (strcmp(tokens[idx], ">>") == 0 && tokens[idx + 1] != NULL)
+                        tokens[idx] = NULL;
+                        return 3;
         }
 
-        free(tokens);
-}
-
-void bbsh_greeter(void)
-{
-        printf(" _    _          _    \n"
-               "| |__ | |__  ___ | |__  \n"
-               "| '_ \\| '_ \\/ __|| '_ \\ \n"
-               "| |_) | |_) \\__ \\| | | |\n"
-               "|_.__/|_.__/|___/|_| |_| v0.03\n\n");
-        fflush(stdout);
+        return 0;
 }

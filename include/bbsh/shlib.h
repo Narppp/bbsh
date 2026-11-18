@@ -6,6 +6,7 @@
 * This header file only has c libraries necessary to build the shell and some macros
 */
 #include <errno.h>
+#include <fcntl.h>
 #include <stdio.h>
 #include <limits.h>
 #include <stdint.h>

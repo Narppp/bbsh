@@ -8,6 +8,7 @@ int main(void)
 {
         struct Shell bbsh = {0};
 
+        bbsh_greeter();
         while (1) {
                 char *shortened_dir = get_dir(bbsh.directory);
                 bbsh.buffer = sh_prompt(bbsh.buffer, shortened_dir);
